@@ -4,11 +4,11 @@ PROJECT(differential_evolution C CXX)
 
 FIND_PACKAGE(Threads REQUIRED)
 
-SET(CMAKE_CXX_FLAGS_RELEASE "-Wall -O3 -std=c++11")
+SET(CMAKE_CXX_FLAGS_RELEASE "-Wall -O3 -std=c++14 -I../../../../MochiMochi -I../../../../eigen")
 SET(CMAKE_CXX_FLAGS_DEBUG "-g")
 SET(CMAKE_BUILD_TYPE Release)
 SET(CMAKE_LINK_EXECUTABLE "-lboost_serialization -lboost_program_options")
 
-INCLUDE_DIRECTORIES("${PROJECT_SOURCE_DIR} ../../../src/classifier/binary/")
-ADD_EXECUTABLE(adam adam.cpp)
-TARGET_LINK_LIBRARIES(adam ${CMAKE_LINK_EXECUTABLE})
+INCLUDE_DIRECTORIES("${PROJECT_SOURCE_DIR}")
+ADD_EXECUTABLE(adam.out adam.cpp)
+TARGET_LINK_LIBRARIES(adam.out ${CMAKE_LINK_EXECUTABLE})

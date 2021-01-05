@@ -4,10 +4,10 @@ PROJECT(differential_evolution C CXX)
 
 FIND_PACKAGE(Threads REQUIRED)
 
-SET(CMAKE_CXX_FLAGS_RELEASE "-Wall -O3 -std=c++14")
+SET(CMAKE_CXX_FLAGS_RELEASE "-Wall -O3 -std=c++14 -I../../../../MochiMochi -I../../../../eigen")
 SET(CMAKE_CXX_FLAGS_DEBUG "-g")
 SET(CMAKE_BUILD_TYPE Release)
 SET(CMAKE_LINK_EXECUTABLE "-lboost_serialization -lboost_program_options")
 
-ADD_EXECUTABLE(nherd nherd.cpp)
-TARGET_LINK_LIBRARIES(nherd ${CMAKE_LINK_EXECUTABLE})
+ADD_EXECUTABLE(nherd.out nherd.cpp)
+TARGET_LINK_LIBRARIES(nherd.out ${CMAKE_LINK_EXECUTABLE})
