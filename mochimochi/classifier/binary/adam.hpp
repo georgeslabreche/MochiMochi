@@ -72,6 +72,10 @@ public :
     return true;
   }
 
+  int predict(const Eigen::VectorXd& feature) const {
+    return calculate_margin(feature) > 0.0 ? 1 : -1;
+  }
+
   void save(const std::string& filename) {
     std::ofstream ofs(filename);
     assert(ofs);
@@ -86,10 +90,6 @@ public :
     boost::archive::text_iarchive ia(ifs);
     ia >> *this;
     ifs.close();
-  }
-
-  int predict(const Eigen::VectorXd& feature) const {
-    return calculate_margin(feature) > 0.0 ? 1 : -1;
   }
 
 private :

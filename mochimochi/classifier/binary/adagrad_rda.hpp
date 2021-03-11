@@ -2,6 +2,13 @@
 #define MOCHIMOCHI_ADAGRAD_RDA_HPP_
 
 #include <Eigen/Dense>
+#include <boost/serialization/serialization.hpp>
+#include <boost/serialization/nvp.hpp>
+#include <boost/serialization/split_member.hpp>
+#include <boost/serialization/vector.hpp>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <fstream>
 #include "../../functions/enumerate.hpp"
 
 class ADAGRAD_RDA {
@@ -68,6 +75,59 @@ public :
 
   int predict(const Eigen::VectorXd& x) const {
     return calculate_margin(x) > 0.0 ? 1 : -1;
+  }
+
+  void save(const std::string& filename) {
+    std::ofstream ofs(filename);
+    assert(ofs);
+    boost::archive::text_oarchive oa(ofs);
+    oa << *this;
+    ofs.close();
+  }
+
+  void load(const std::string& filename) {
+    std::ifstream ifs(filename);
+    assert(ifs);
+    boost::archive::text_iarchive ia(ifs);
+    ia >> *this;
+    ifs.close();
+  }
+
+private :
+  friend class boost::serialization::access;
+  BOOST_SERIALIZATION_SPLIT_MEMBER();
+  template <class Archive>
+  void save(Archive& ar, const unsigned int version) const {
+    std::vector<double> w_vector(_w.data(), _w.data() + _w.size());
+    std::vector<double> h_vector(_h.data(), _h.data() + _h.size());
+    std::vector<double> g_vector(_g.data(), _g.data() + _g.size());
+
+    ar & boost::serialization::make_nvp("w", w_vector);
+    ar & boost::serialization::make_nvp("h", h_vector);
+    ar & boost::serialization::make_nvp("g", g_vector);
+    ar & boost::serialization::make_nvp("dimension", const_cast<std::size_t&>(kDim));
+    ar & boost::serialization::make_nvp("eta", const_cast<double&>(kEta));
+    ar & boost::serialization::make_nvp("lambda", const_cast<double&>(kLambda));
+    ar & boost::serialization::make_nvp("timestep", _timestep);
+  }
+
+  template <class Archive>
+  void load(Archive& ar, const unsigned int version) {
+    std::vector<double> w_vector;
+    std::vector<double> h_vector;
+    std::vector<double> g_vector;
+
+    ar & boost::serialization::make_nvp("w", w_vector);
+    ar & boost::serialization::make_nvp("h", h_vector);
+    ar & boost::serialization::make_nvp("g", g_vector);
+    ar & boost::serialization::make_nvp("dimension", const_cast<std::size_t&>(kDim));
+    ar & boost::serialization::make_nvp("eta", const_cast<double&>(kEta));
+    ar & boost::serialization::make_nvp("lambda", const_cast<double&>(kLambda));
+    ar & boost::serialization::make_nvp("timestep", _timestep);
+
+    _w = Eigen::Map<Eigen::VectorXd>(&w_vector[0], w_vector.size());
+    _h = Eigen::Map<Eigen::VectorXd>(&h_vector[0], h_vector.size());
+    _g = Eigen::Map<Eigen::VectorXd>(&g_vector[0], g_vector.size());
   }
 
 };
