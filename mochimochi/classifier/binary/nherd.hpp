@@ -144,6 +144,7 @@ private :
     ar & boost::serialization::make_nvp("means", means_vector);
     ar & boost::serialization::make_nvp("dimension", const_cast<std::size_t&>(kDim));
     ar & boost::serialization::make_nvp("C", const_cast<double&>(kC));
+    ar & boost::serialization::make_nvp("diagonal", const_cast<int&>(kDiagonal));
   }
 
   template <class Archive>
@@ -154,6 +155,7 @@ private :
     ar & boost::serialization::make_nvp("means", means_vector);
     ar & boost::serialization::make_nvp("dimension", const_cast<std::size_t&>(kDim));
     ar & boost::serialization::make_nvp("C", const_cast<double&>(kC));
+    ar & boost::serialization::make_nvp("diagonal", const_cast<int&>(kDiagonal));
     _covariances = Eigen::Map<Eigen::VectorXd>(&covariances_vector[0], covariances_vector.size());
     _means = Eigen::Map<Eigen::VectorXd>(&means_vector[0], means_vector.size());
   }
