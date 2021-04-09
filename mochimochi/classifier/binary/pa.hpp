@@ -117,6 +117,7 @@ private :
     ar & boost::serialization::make_nvp("weigth", weight);
     ar & boost::serialization::make_nvp("dimension", const_cast<std::size_t&>(kDim));
     ar & boost::serialization::make_nvp("C", const_cast<double&>(kC));
+    ar & boost::serialization::make_nvp("select", const_cast<int&>(kSelect));
   }
 
   template <class Archive>
@@ -125,6 +126,7 @@ private :
     ar & boost::serialization::make_nvp("weight", weight);
     ar & boost::serialization::make_nvp("dimension", const_cast<std::size_t&>(kDim));
     ar & boost::serialization::make_nvp("C", const_cast<double&>(kC));
+    ar & boost::serialization::make_nvp("select", const_cast<int&>(kSelect));
     _weight = Eigen::Map<Eigen::VectorXd>(&weight[0], weight.size());
   }
 };
