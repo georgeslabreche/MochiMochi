@@ -11,8 +11,12 @@
 #include <Eigen/Dense>
 
 #include "binary_oml.hpp"
+#include "../binary/adagrad_rda.hpp"
 #include "../binary/adam.hpp"
 #include "../binary/arow.hpp"
+#include "../binary/nherd.hpp"
+#include "../binary/pa.hpp"
+#include "../binary/scw.hpp"
 
 using namespace std;
 
@@ -57,30 +61,58 @@ public:
     return m_pBinaryOML->name();
   }
 
-  void train()
+  /**
+   * Train the model.
+   */
+  void train(string *pInput, int dim)
   {
-    std::cout << "TRAIN: " << m_pBinaryOML->name() << std::endl;
+    /* Convert training string input into training vector. */
+    auto data = utility::read_ones<int>(*pInput, dim);
+
+    /* Update the model with the new training data. */
+    m_pBinaryOML->update(data.second, data.first);
   }
 
-  void trainAndSave(const char* modelFilePath)
+  /**
+   * Train and save the model.
+   */
+  void trainAndSave(string *pInput, size_t dim, const string modelFilePath)
   {
-    std::cout << "TRAIN AND SAVE: " << modelFilePath << std::endl;
+    /* Convert training string input into data vector. */
+    auto data = utility::read_ones<int>(*pInput, dim);
+
+    /* Update the model with the new training data. */
+    m_pBinaryOML->update(data.second, data.first);
+
+    /* Serialize the model. */
     m_pBinaryOML->save(modelFilePath);
   }
 
-  void infer()
+  /**
+   * Infer/predicut the label of the given data input
+   */
+  int infer(string *pInput, size_t dim)
   {
-    std::cout << "INFER: " << m_pBinaryOML->name() << std::endl;
+    /* Convert inference string input into data vector. */
+    auto data = utility::read_ones<int>(*pInput, dim);
+
+    /* Invoke prediction method and return result. */
+    return m_pBinaryOML->predict(data.second);
   }
 
-  void load(const char* modelFilePath)
+  /**
+   * Load the model.
+   */
+  void load(const string modelFilePath)
   {
-    std::cout << "LOAD: " << modelFilePath << std::endl;
+    m_pBinaryOML->load(modelFilePath);
   }
 
-  void save(const char* modelFilePath)
+  /**
+   * Save the model.
+   */
+  void save(const string modelFilePath)
   {
-    std::cout << "SAVE: " << modelFilePath << std::endl;
     m_pBinaryOML->save(modelFilePath);
   }
 };
