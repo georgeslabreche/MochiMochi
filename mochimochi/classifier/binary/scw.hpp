@@ -11,8 +11,9 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <fstream>
 #include "../../functions/enumerate.hpp"
+#include "../factory/binary_oml.hpp"
 
-class SCW {
+class SCW : public BinaryOML {
 private :
   const std::size_t kDim;
   const double kC;
@@ -76,6 +77,10 @@ private :
   }
 
 public :
+
+  std::string name() const override {
+    return std::string("SCW");
+  }
 
   bool update(const Eigen::VectorXd& feature, const int label) {
     const auto v = compute_confidence(feature);

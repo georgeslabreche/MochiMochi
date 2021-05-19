@@ -11,8 +11,9 @@
 #include <fstream>
 #include <functional>
 #include "../../functions/enumerate.hpp"
+#include "../factory/binary_oml.hpp"
 
-class NHERD {
+class NHERD : public BinaryOML {
 private :
   const std::size_t kDim;
   const double kC;
@@ -92,6 +93,10 @@ private :
   }
 
 public :
+
+  std::string name() const override {
+    return std::string("NHERD");
+  }
 
   bool update(const Eigen::VectorXd& feature, const int label) {
     const auto margin = compute_margin(feature);

@@ -10,8 +10,9 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <fstream>
 #include "../../functions/enumerate.hpp"
+#include "../factory/binary_oml.hpp"
 
-class ADAGRAD_RDA {
+class ADAGRAD_RDA : public BinaryOML {
 private :
   const std::size_t kDim;
   const double kEta;
@@ -53,6 +54,10 @@ private :
   }
 
 public :
+
+  std::string name() const override {
+    return std::string("ADAGRAD_RDA");
+  }
 
   bool update(const Eigen::VectorXd& feature, const int label) {
     if (suffer_loss(feature, label) <= 0.0) { return false; }

@@ -11,8 +11,9 @@
 #include <fstream>
 #include <functional>
 #include "../../functions/enumerate.hpp"
+#include "../factory/binary_oml.hpp"
 
-class PA {
+class PA : public BinaryOML {
 private :
   const std::size_t kDim;
   const double kC;
@@ -72,6 +73,10 @@ private :
   }
 
 public :
+
+  std::string name() const override {
+    return std::string("PA");
+  }
 
   bool update(const Eigen::VectorXd& feature, const int label) {
     const auto loss = suffer_loss(feature, label);
