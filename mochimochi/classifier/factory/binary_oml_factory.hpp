@@ -1,6 +1,9 @@
 /**
  * Implement the Factory Design Pattern to instanciate Online ML algorithm objects.
  * https://refactoring.guru/design-patterns/factory-method/cpp/example
+ * 
+ * Also implemented BinaryOMLCreatorInterface to give the option to develop the Proxy design pattern:
+ * https://refactoring.guru/design-patterns/proxy/cpp/example#lang-features
  */
 
 #ifndef MOCHIMOCHI_BINARY_OML_FACTORY_HPP_
@@ -18,18 +21,67 @@
 #include "../binary/pa.hpp"
 #include "../binary/scw.hpp"
 
+#include "../../utility/load_svmlight_file.hpp"
+
 using namespace std;
 
-/**
- * The Creator class declares the factory method that is supposed to return an
- * object of a Product class. The Creator's subclasses usually provide the
- * implementation of this method.
- */
 
-class BinaryOMLCreator {
+
+/**
+ * This interface declares common operations for both BinaryOMLCreator and
+ * whatever Proxy class will be im. As long as the client works with RealSubject using this interface,
+ * you'll be able to pass it a proxy instead of a real subject.
+ */
+class BinaryOMLCreatorInterface
+{
+public:
   /**
-   * Note that the Creator may also provide some default implementation of the
-   * factory method.
+   * Name of the ML algorithm.
+   */
+  virtual string name() = 0;
+
+  /**
+   * Train/update the model with the given training input.
+   */
+  virtual void train(string *pInput, int dim) = 0;
+
+  /**
+   * Train/update the model with the given training input and save/serialize the model.
+   */
+  virtual void trainAndSave(string *pInput, size_t dim, const string modelFilePath) = 0;
+
+  /**
+   * Infer/predict the label with the given input.
+   */
+  virtual int infer(string *pInput, size_t dim) = 0;
+
+  /**
+   * Load a saved/serialized model.
+   */
+  virtual void load(const string modelFilePath) = 0;
+
+  /**
+   * Save/serialize the trained model.
+   */
+  virtual void save(const string modelFilePath) = 0;
+};
+
+/**
+ * The Creator class declares the factory method that is supposed to return
+ * an object of a Product class. The Creator's subclasses usually provide
+ * the implementation of this method.
+ * 
+ * Despite its name, the Creator's primary responsibility isn't to create
+ * BinaryOML. Usually, it contains some core business logic that relies
+ * on BinaryOML objects, returned by the factory method. Subclasses can
+ * indirectly change that business logic by overriding the factory method
+ * and returning a different type of BinaryOML from it.
+*/
+class BinaryOMLCreator : public BinaryOMLCreatorInterface
+{
+  /**
+   * Note that the Creator may also provide some default implementation of
+   * the factory method.
    */
 protected:
   BinaryOML* m_pBinaryOML;
@@ -41,7 +93,8 @@ protected:
   }
 
 public:
-  virtual ~BinaryOMLCreator() {
+  virtual ~BinaryOMLCreator()
+  {
     delete m_pBinaryOML;
   };
   
@@ -49,12 +102,10 @@ public:
   {
     return m_pBinaryOML;
   };
+  
+  
   /**
-   * Despite its name, the Creator's primary responsibility isn't to create
-   * BinaryOML. Usually, it contains some core business logic that relies
-   * on BinaryOML objects, returned by the factory method. Subclasses can
-   * indirectly change that business logic by overriding the factory method
-   * and returning a different type of BinaryOML from it.
+   * The name of the ML method tied to the instance of the Creator class.
    */
   string name()
   {
@@ -74,7 +125,7 @@ public:
   }
 
   /**
-   * Train and save the model.
+   * Train and save/serialize the model.
    */
   void trainAndSave(string *pInput, size_t dim, const string modelFilePath)
   {
@@ -89,7 +140,7 @@ public:
   }
 
   /**
-   * Infer/predicut the label of the given data input
+   * Infer/predict the label of the given data input
    */
   int infer(string *pInput, size_t dim)
   {
@@ -109,7 +160,7 @@ public:
   }
 
   /**
-   * Save the model.
+   * Save/serialize the model.
    */
   void save(const string modelFilePath)
   {
@@ -121,13 +172,13 @@ public:
  * Concrete Creators override the factory method in order to change the
  * resulting BinaryOML's type.
  */
-class BinaryADAGRADRDACreator : public BinaryOMLCreator {
+class BinaryADAGRADRDACreator : public BinaryOMLCreator
+{
   /**
    * Note that the signature of the method still uses the abstract product type,
    * even though the concrete product is actually returned from the method. This
    * way the Creator can stay independent of concrete product classes.
    */
-
 public:
   virtual ~BinaryADAGRADRDACreator() {}
 
@@ -140,8 +191,9 @@ public:
 /** 
  * Concrete Creator for ADAGRAD RDA.
  */
-class BinaryADAMCreator : public BinaryOMLCreator {
-  
+class BinaryADAMCreator : public BinaryOMLCreator
+{
+
 public:
   virtual ~BinaryADAMCreator() {};
 
@@ -153,7 +205,8 @@ public:
 /** 
  * Concrete Creator for AROW.
  */
-class BinaryAROWCreator : public BinaryOMLCreator {
+class BinaryAROWCreator : public BinaryOMLCreator
+{
 
 public:
   virtual ~BinaryAROWCreator() {}
@@ -166,7 +219,8 @@ public:
 /**
  * Concrete Creator for NHERD.
  */
-class BinaryNHERDCreator : public BinaryOMLCreator {
+class BinaryNHERDCreator : public BinaryOMLCreator
+{
 
 public:
   virtual ~BinaryNHERDCreator() {}
@@ -179,7 +233,8 @@ public:
 /**
  * Concrete Creator for PA.
  */
-class BinaryPACreator : public BinaryOMLCreator {
+class BinaryPACreator : public BinaryOMLCreator
+{
 
 public:
   virtual ~BinaryPACreator() {}
@@ -192,7 +247,8 @@ public:
 /**
  * Concrete Creator for SCW.
  */
-class BinarySCWCreator : public BinaryOMLCreator {
+class BinarySCWCreator : public BinaryOMLCreator
+{
 
 public:
   virtual ~BinarySCWCreator() {}
