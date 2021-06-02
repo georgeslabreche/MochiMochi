@@ -102,7 +102,7 @@ public :
     return true;
   }
 
-  int predict(const Eigen::VectorXd& x) {
+  int predict(const Eigen::VectorXd& x) const {
     return _means.dot(x) < 0.0 ? -1 : 1;
   }
 

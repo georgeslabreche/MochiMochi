@@ -255,7 +255,7 @@ public:
 
   /* The BinaryOML creator for SCW. */
   BinarySCWCreator(const size_t dim, const double c, const double eta)
-    : BinaryOMLCreator(new PA(dim, c, eta)) { }
+    : BinaryOMLCreator(new SCW(dim, c, eta)) { }
 };
 
 #endif // MOCHIMOCHI_BINARY_OML_FACTORY_HPP_

@@ -35,23 +35,27 @@ public :
 
     // int select : switching the PA algorithm
     // 0 : PA
-    // 1 : PA-1
-    // 2 : PA-2
+    // 1 : PA-I
+    // 2 : PA-II
     switch(kSelect) {
     case 0 :
-      _compute_tau = [](const auto value, const auto loss) {
-        return loss / std::pow(std::abs(value), 2);
+      _compute_tau = [=](const auto value, const auto loss) {
+        /* Check for divide by zero in which case return zero for tau. */
+        /* If "value" is non-zero then proceed with division and return result. */
+        return (value == 0) ? 0 : loss / std::pow(std::abs(value), 2);
       };
       break;
     case 1 :
       _compute_tau = [=](const auto value, const auto loss) {
+        /* Possible divide by zero situation here if "value" is zero resulting in pa = inf. */
+        /* However, the inf is ignored when doing std::min(kC, pa). */
         const auto pa = loss / std::pow(std::abs(value), 2);
         return std::min(kC, pa);
       };
       break;
     case 2 :
       _compute_tau = [=](const auto value, const auto loss) {
-        return loss / (std::pow(std::abs(value), 2) + 1.0 / 2 * kC );
+        return loss / (std::pow(std::abs(value), 2) + 1.0 / 2 * kC);
       };
       break;
     default:
@@ -119,7 +123,7 @@ private :
   template <class Archive>
   void save(Archive& ar, const unsigned int version) const {
     std::vector<double> weight(_weight.data(), _weight.data() + _weight.size());
-    ar & boost::serialization::make_nvp("weigth", weight);
+    ar & boost::serialization::make_nvp("weight", weight);
     ar & boost::serialization::make_nvp("dimension", const_cast<std::size_t&>(kDim));
     ar & boost::serialization::make_nvp("C", const_cast<double&>(kC));
     ar & boost::serialization::make_nvp("select", const_cast<int&>(kSelect));
