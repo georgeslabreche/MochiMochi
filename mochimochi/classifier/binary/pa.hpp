@@ -47,10 +47,11 @@ public :
       break;
     case 1 :
       _compute_tau = [=](const auto value, const auto loss) {
-        /* Possible divide by zero situation here if "value" is zero resulting in pa = inf. */
-        /* However, the inf is ignored when doing std::min(kC, pa). */
+        /* Possible divide by zero situation if "value" is zero resulting in pa = inf. */
+        /* Check for this with a ternary operator and return kC if value == 0. */
+        /* Using the ternary check instead of just relying on std::min in case it's possible to get a -inf (not sure). */
         const auto pa = loss / std::pow(std::abs(value), 2);
-        return std::min(kC, pa);
+        return (value == 0) ? kC : std::min(kC, pa);
       };
       break;
     case 2 :
