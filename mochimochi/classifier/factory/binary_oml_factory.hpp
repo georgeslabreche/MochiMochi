@@ -2,7 +2,7 @@
  * Implement the Factory Design Pattern to instanciate Online ML algorithm objects.
  * https://refactoring.guru/design-patterns/factory-method/cpp/example
  * 
- * Also implemented BinaryOMLCreatorInterface to give the option to develop the Proxy design pattern:
+ * Also implemented BinaryOMLInterface to give the option to develop the Proxy design pattern:
  * https://refactoring.guru/design-patterns/proxy/cpp/example#lang-features
  */
 
@@ -32,7 +32,7 @@ using namespace std;
  * whatever Proxy class will be im. As long as the client works with RealSubject using this interface,
  * you'll be able to pass it a proxy instead of a real subject.
  */
-class BinaryOMLCreatorInterface
+class BinaryOMLInterface
 {
 public:
   /**
@@ -77,7 +77,7 @@ public:
  * indirectly change that business logic by overriding the factory method
  * and returning a different type of BinaryOML from it.
 */
-class BinaryOMLCreator : public BinaryOMLCreatorInterface
+class BinaryOMLCreator : public BinaryOMLInterface
 {
   /**
    * Note that the Creator may also provide some default implementation of
