@@ -39,10 +39,6 @@ public :
 
 private :
 
-  std::string name() const override {
-    return std::string("AROW");
-  }
-
   double suffer_loss(const double margin, const int label) const {
     return margin * label;
   }
@@ -61,6 +57,10 @@ private :
   }
 
 public :
+
+  std::string name() const override {
+    return std::string("AROW");
+  }
 
   bool update(const Eigen::VectorXd& feature, const int label) override {
     const auto margin = compute_margin(feature);

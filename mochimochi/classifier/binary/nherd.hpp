@@ -98,7 +98,7 @@ public :
     return std::string("NHERD");
   }
 
-  bool update(const Eigen::VectorXd& feature, const int label) {
+  bool update(const Eigen::VectorXd& feature, const int label) override {
     const auto margin = compute_margin(feature);
 
     if (suffer_loss(margin, label) >= 1.0) { return false; }
@@ -114,7 +114,7 @@ public :
     return true;
   }
 
-  int predict(const Eigen::VectorXd& x) const {
+  int predict(const Eigen::VectorXd& x) const override {
     return compute_margin(x) > 0.0 ? 1 : -1;
   }
 
@@ -122,7 +122,7 @@ public :
     return _means;
   }
 
-  void save(const std::string& filename) {
+  void save(const std::string& filename) override {
     std::ofstream ofs(filename);
     assert(ofs);
     boost::archive::text_oarchive oa(ofs);
@@ -130,7 +130,7 @@ public :
     ofs.close();
   }
 
-  void load(const std::string& filename) {
+  void load(const std::string& filename) override {
     std::ifstream ifs(filename);
     assert(ifs);
     boost::archive::text_iarchive ia(ifs);
