@@ -11,8 +11,9 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <fstream>
 #include "../../functions/enumerate.hpp"
+#include "../factory/binary_oml.hpp"
 
-class ADAM {
+class ADAM : public BinaryOML {
 private :
   const std::size_t kDim;
 
@@ -47,7 +48,11 @@ private :
 
 public :
 
-  bool update(const Eigen::VectorXd& feature, const int label) {
+  std::string name() const override {
+    return std::string("ADAM");
+  }
+
+  bool update(const Eigen::VectorXd& feature, const int label) override {
     constexpr auto kAlpha = 0.001;
     constexpr auto kBeta1 = 0.9;
     constexpr auto kBeta2 = 0.999;
@@ -72,11 +77,11 @@ public :
     return true;
   }
 
-  int predict(const Eigen::VectorXd& feature) const {
+  int predict(const Eigen::VectorXd& feature) const override {
     return calculate_margin(feature) > 0.0 ? 1 : -1;
   }
 
-  void save(const std::string& filename) {
+  void save(const std::string& filename) override {
     std::ofstream ofs(filename);
     assert(ofs);
     boost::archive::text_oarchive oa(ofs);
@@ -84,7 +89,7 @@ public :
     ofs.close();
   }
 
-  void load(const std::string& filename) {
+  void load(const std::string& filename) override {
     std::ifstream ifs(filename);
     assert(ifs);
     boost::archive::text_iarchive ia(ifs);

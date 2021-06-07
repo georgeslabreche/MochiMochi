@@ -10,8 +10,9 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <fstream>
 #include "../../functions/enumerate.hpp"
+#include "../factory/binary_oml.hpp"
 
-class ADAGRAD_RDA {
+class ADAGRAD_RDA : public BinaryOML {
 private :
   const std::size_t kDim;
   const double kEta;
@@ -54,7 +55,11 @@ private :
 
 public :
 
-  bool update(const Eigen::VectorXd& feature, const int label) {
+  std::string name() const override {
+    return std::string("ADAGRAD_RDA");
+  }
+
+  bool update(const Eigen::VectorXd& feature, const int label) override {
     if (suffer_loss(feature, label) <= 0.0) { return false; }
 
     _timestep++;
@@ -73,11 +78,11 @@ public :
     return true;
   }
 
-  int predict(const Eigen::VectorXd& x) const {
+  int predict(const Eigen::VectorXd& x) const override {
     return calculate_margin(x) > 0.0 ? 1 : -1;
   }
 
-  void save(const std::string& filename) {
+  void save(const std::string& filename) override {
     std::ofstream ofs(filename);
     assert(ofs);
     boost::archive::text_oarchive oa(ofs);
@@ -85,7 +90,7 @@ public :
     ofs.close();
   }
 
-  void load(const std::string& filename) {
+  void load(const std::string& filename) override {
     std::ifstream ifs(filename);
     assert(ifs);
     boost::archive::text_iarchive ia(ifs);

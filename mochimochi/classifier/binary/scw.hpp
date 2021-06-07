@@ -11,8 +11,9 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <fstream>
 #include "../../functions/enumerate.hpp"
+#include "../factory/binary_oml.hpp"
 
-class SCW {
+class SCW : public BinaryOML {
 private :
   const std::size_t kDim;
   const double kC;
@@ -77,7 +78,11 @@ private :
 
 public :
 
-  bool update(const Eigen::VectorXd& feature, const int label) {
+  std::string name() const override {
+    return std::string("SCW");
+  }
+
+  bool update(const Eigen::VectorXd& feature, const int label) override {
     const auto v = compute_confidence(feature);
     const auto m = label * _means.dot(feature);
     const auto n = v + 1.0 / 2.0 * kC;
@@ -97,7 +102,7 @@ public :
     return true;
   }
 
-  int predict(const Eigen::VectorXd& x) {
+  int predict(const Eigen::VectorXd& x) const override {
     return _means.dot(x) < 0.0 ? -1 : 1;
   }
 
@@ -105,7 +110,7 @@ public :
     return _means;
   }
 
-  void save(const std::string& filename) {
+  void save(const std::string& filename) override {
     std::ofstream ofs(filename);
     assert(ofs);
     boost::archive::text_oarchive oa(ofs);
@@ -113,7 +118,7 @@ public :
     ofs.close();
   }
 
-  void load(const std::string& filename) {
+  void load(const std::string& filename) override {
     std::ifstream ifs(filename);
     assert(ifs);
     boost::archive::text_iarchive ia(ifs);
