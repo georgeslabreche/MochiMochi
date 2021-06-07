@@ -67,9 +67,9 @@ public:
 };
 
 /**
- * The Creator class declares the factory method that is supposed to return
- * an object of a Product class. The Creator's subclasses usually provide
- * the implementation of this method.
+ * The Creator class declares the factory method that returns an object
+ * of the BinaryOML class. The Creator's subclasses provide the
+ * implementation of this method.
  * 
  * Despite its name, the Creator's primary responsibility isn't to create
  * BinaryOML. Usually, it contains some core business logic that relies
@@ -175,9 +175,9 @@ public:
 class BinaryADAGRADRDACreator : public BinaryOMLCreator
 {
   /**
-   * Note that the signature of the method still uses the abstract product type,
-   * even though the concrete product is actually returned from the method. This
-   * way the Creator can stay independent of concrete product classes.
+   * Note that the signature of the method still uses the abstract binary OML type,
+   * even though the concrete binary OML is actually returned from the method. This
+   * way the Creator can stay independent of concrete binary OML classes.
    */
 public:
   virtual ~BinaryADAGRADRDACreator() {}
