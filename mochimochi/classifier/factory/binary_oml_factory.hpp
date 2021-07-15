@@ -28,9 +28,7 @@ using namespace std;
 
 
 /**
- * This interface declares common operations for both BinaryOMLCreator and
- * whatever Proxy class will be im. As long as the client works with RealSubject using this interface,
- * you'll be able to pass it a proxy instead of a real subject.
+ * This interface declares common operations for both BinaryOMLCreator and whatever Proxy class will be implemented.
  */
 class BinaryOMLInterface
 {
